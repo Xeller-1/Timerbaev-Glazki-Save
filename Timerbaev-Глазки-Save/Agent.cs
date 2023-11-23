@@ -57,5 +57,47 @@ namespace Timerbaev_Глазки_Save
 
             return count;
         }
+        public int ProductSaleCount
+        {
+            get
+            {
+                int total = 0;
+                foreach (ProductSale productSale in this.ProductSale)
+                {
+                    total += productSale.ProductCount * Convert.ToInt32(productSale.Product.MinCostForAgent);
+                }
+                return total;
+            }
+        }
+
+        public int Sales
+        {
+            get
+            {
+                int total = 0;
+                foreach (ProductSale productSale in this.ProductSale)
+                {
+                    total += productSale.ProductCount * 1000;
+                }
+                int sale = 0;
+                if (total > 10000 && total < 50000)
+                {
+                    sale = 5;
+                }
+                else if (total > 50000 && total < 150000)
+                {
+                    sale = 10;
+                }
+                else if (total > 150000 && total < 500000)
+                {
+                    sale = 20;
+                }
+                else if (total > 500000)
+                {
+                    sale = 25;
+                }
+                return sale;
+            }
+        }
     }
 }
