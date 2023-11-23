@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Timerbaev_Глазки_Save"
         mc:Ignorable="d"
-        Title="Timerbaev-Глазки" FontFamily=" Century Gothic" Icon="Resources/Глазки-save.png" Height="450" Width="800" MinHeight="150" MinWidth="300">
+        Title="Timerbaev-Глазки" FontFamily=" Century Gothic" Icon="Resources/Глазки-save.png" Height="450" Width="800" MinHeight="200" MinWidth="700">
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="75"/>
@@ -15,7 +16,7 @@
         <Image Source="Resources/Глазки-save.png" HorizontalAlignment="Left"></Image>
         <TextBlock Text="Агенты" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
         <Frame Grid.Row="1" Name="MainFrame" ContentRendered="MainFrame_ContentRendered" NavigationUIVisibility="Hidden"></Frame>
-        <Button Content="Back" Name="BtnBack" Width="175" Height="30" HorizontalAlignment="Right" Margin="5"
+        <Button Content="Назад" Name="BtnBack" Width="175" Height="30" HorizontalAlignment="Right" Margin="5"
                 Click="BtnBack_Click"></Button>
     </Grid>
 </Window>

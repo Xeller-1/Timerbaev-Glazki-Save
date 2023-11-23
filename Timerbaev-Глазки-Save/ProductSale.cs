@@ -11,7 +11,8 @@ namespace Timerbaev_Глазки_Save
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Linq;
+
     public partial class ProductSale
     {
         public int ID { get; set; }

@@ -11,7 +11,8 @@ namespace Timerbaev_Глазки_Save
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Linq;
+
     public partial class Agent
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -43,5 +44,18 @@ namespace Timerbaev_Глазки_Save
         public virtual ICollection<ProductSale> ProductSale { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Shop> Shop { get; set; }
+
+        public int ProductCount => GetAllProducts();
+        public int GetAllProducts()
+        {
+            var count = 0;
+            var context = Timerbaev_agentEntities.GetContext().ProductSale.Where(p => p.AgentID == ID).ToList();
+            foreach (var productSale in context)
+            {
+                count += productSale.ProductCount;
+            }
+
+            return count;
+        }
     }
 }
