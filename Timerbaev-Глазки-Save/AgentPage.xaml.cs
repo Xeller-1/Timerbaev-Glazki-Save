@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace Timerbaev_Глазки_Save
 {
@@ -271,8 +263,55 @@ namespace Timerbaev_Глазки_Save
                 ChangePriory.Visibility = Visibility.Hidden;
             } */
         }
-       
+
+        private void EditPriority_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (AgentListView.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Выберите агента/ов для редактирования приоритета");
+                return;
+            }
+            else
+            {
+                var p = (AgentListView.SelectedItems.Cast<Agent>().Select(selectedItem => selectedItem.Priority)).Prepend(0).Max();
+                var window = new PriorityWindow(p);
+                window.ShowDialog();
+                if (string.IsNullOrEmpty(window.Priority.Text))
+                {
+                    return;
+                }
+
+                foreach (Agent selectedItem in AgentListView.SelectedItems)
+                {
+                    selectedItem.Priority = Convert.ToInt32(window.Priority.Text);
+                }
+
+                try
+                {
+                    Timerbaev_agentEntities.GetContext().SaveChanges();
+                    window.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                UpdateAgent();
+            }
+        }
+
+        
+        private void AgentListView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            EditButton.Visibility = AgentListView.SelectedItems.Count > 1 ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        private void Продажи_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
+    
+    
 
     
 }

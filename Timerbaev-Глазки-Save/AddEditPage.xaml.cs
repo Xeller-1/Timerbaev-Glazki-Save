@@ -138,6 +138,10 @@ namespace Timerbaev_Глазки_Save
         {
 
         }
+         private void HistoryBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new ProductPage(_currentAgent));
+        }
     }
 }
            

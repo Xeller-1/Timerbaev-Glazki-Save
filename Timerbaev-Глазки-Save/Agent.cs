@@ -12,6 +12,7 @@ namespace Timerbaev_Глазки_Save
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows.Media;
 
     public partial class Agent
     {
@@ -22,28 +23,22 @@ namespace Timerbaev_Глазки_Save
             this.ProductSale = new HashSet<ProductSale>();
             this.Shop = new HashSet<Shop>();
         }
-    
+
         public int ID { get; set; }
-        public string Title { get; set; }
         public int AgentTypeID { get; set; }
+        public string Title { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Logo { get; set; }
         public string Address { get; set; }
+        public string AgentTypeString => AgentType.Title;
+        public int Priority { get; set; }
+        public string DirectorName { get; set; }
         public string INN { get; set; }
         public string KPP { get; set; }
-        public string DirectorName { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
-        public string Logo { get; set; }
-        public int Priority { get; set; }
 
-        public string AgentTypeString => AgentType.Title;
-
-        public virtual AgentType AgentType { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AgentPriorityHistory> AgentPriorityHistory { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductSale> ProductSale { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Shop> Shop { get; set; }
+        public int Sale => SaleCalculator(SalesCount);
+        public decimal SalesCount => SalesCalculator();
 
         public int ProductCount => GetAllProducts();
         public int GetAllProducts()
@@ -57,47 +52,73 @@ namespace Timerbaev_Глазки_Save
 
             return count;
         }
-        public int ProductSaleCount
+
+        public decimal SalesCalculator()
+        {
+            var productSale = Timerbaev_agentEntities.GetContext().ProductSale.Where(p => p.AgentID == ID).ToList();
+            var products = Timerbaev_agentEntities.GetContext().Product.ToList();
+            decimal sale = 0;
+            foreach (var product in products)
+            {
+                foreach (var item2 in productSale)
+                {
+                    if (product.ID == item2.ProductID)
+                    {
+                        sale += product.MinCostForAgent * item2.ProductCount;
+                    }
+                }
+            }
+
+            return sale;
+
+        }
+        public int SaleCalculator(decimal sale)
+        {
+            var percents = 0;
+            if (sale >= 0 && sale < 10000)
+            {
+                percents = 0;
+            }
+            if (sale >= 10000 && sale < 50000)
+            {
+                percents = 5;
+            }
+            if (sale >= 50000 && sale < 150000)
+            {
+                percents = 10;
+            }
+            if (sale >= 150000 && sale < 500000)
+            {
+                percents = 20;
+            }
+            if (sale >= 500000)
+            {
+                percents = 25;
+            }
+            return percents;
+        }
+
+        public SolidColorBrush FonStyle
         {
             get
             {
-                int total = 0;
-                foreach (ProductSale productSale in this.ProductSale)
+                if (Sale >= 10)
                 {
-                    total += productSale.ProductCount * Convert.ToInt32(productSale.Product.MinCostForAgent);
+                    return (SolidColorBrush)new BrushConverter().ConvertFromString("LightGreen");
                 }
-                return total;
+                else
+                {
+                    return (SolidColorBrush)new BrushConverter().ConvertFromString("White");
+                }
             }
         }
 
-        public int Sales
-        {
-            get
-            {
-                int total = 0;
-                foreach (ProductSale productSale in this.ProductSale)
-                {
-                    total += productSale.ProductCount * 1000;
-                }
-                int sale = 0;
-                if (total > 10000 && total < 50000)
-                {
-                    sale = 5;
-                }
-                else if (total > 50000 && total < 150000)
-                {
-                    sale = 10;
-                }
-                else if (total > 150000 && total < 500000)
-                {
-                    sale = 20;
-                }
-                else if (total > 500000)
-                {
-                    sale = 25;
-                }
-                return sale;
-            }
-        }
+        public virtual AgentType AgentType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AgentPriorityHistory> AgentPriorityHistory { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductSale> ProductSale { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shop> Shop { get; set; }
     }
 }
